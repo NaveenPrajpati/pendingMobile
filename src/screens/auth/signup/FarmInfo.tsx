@@ -8,30 +8,37 @@ import ButtonTag from '../../../components/elements/ButtonTag';
 import SignupTemplate from './SignupTemplate';
 import VectorIcon from '../../../components/VectorIcon';
 import {Formik} from 'formik';
-import {object, string} from 'yup';
+import {number, object, string} from 'yup';
 import {useNavigation} from '@react-navigation/native';
 
 let userSchema = object({
-  fullName: string().required().min(3, 'minimum length 4'),
-  //   email: string().email().required(),
+  business_name: string().required().min(3, 'minimum length 4'),
+  informal_name: string().email().required('email required'),
+  address: string().required('phone required'),
+  city: string().required('password required'),
+  state: string().required('password required'),
+  zip_code: number().required('password required'),
 });
 
-export default function FarmInfo() {
+export default function FarmInfo({route}) {
+  const {data} = route.params;
+
   const navigation = useNavigation();
   function onSubmit(values) {
     console.log(values);
-    navigation.navigate('Verificaton');
+    const newData = {...data, ...values};
+    navigation.navigate('Verificaton', {data: newData});
   }
 
   return (
     <Formik
       initialValues={{
-        businessName: '',
-        informalName: '',
-        streetAddress: '',
+        business_name: '',
+        informal_name: '',
+        address: '',
         city: '',
         state: '',
-        zipcode: '',
+        zip_code: '',
       }}
       //   validationSchema={userSchema}
       onSubmit={onSubmit}>
@@ -40,40 +47,42 @@ export default function FarmInfo() {
           <View style={{rowGap: 15, marginTop: 40}}>
             <TextInputTag
               placeholder="Business Name"
-              onChangeText={handleChange('businessName')}
-              onBlur={handleBlur('businessName')}
-              value={values.businessName}
+              onChangeText={handleChange('business_name')}
+              onBlur={handleBlur('business_name')}
+              value={values.business_name}
               left={
                 <TextInput.Icon color={colors.primaryText} icon="tag-outline" />
               }
-              error={errors.businessName && touched.businessName ? true : false}
-              errorMessage={errors.businessName}
+              error={
+                errors.business_name && touched.business_name ? true : false
+              }
+              errorMessage={errors.business_name}
             />
             <TextInputTag
               placeholder="Informal Name"
-              onChangeText={handleChange('informalName')}
-              onBlur={handleBlur('informalName')}
-              value={values.informalName}
+              onChangeText={handleChange('informal_name')}
+              onBlur={handleBlur('informal_name')}
+              value={values.informal_name}
               left={<TextInput.Icon color={colors.primaryText} icon="mail" />}
-              error={errors.informalName && touched.informalName ? true : false}
-              errorMessage={errors.informalName}
+              error={
+                errors.informal_name && touched.informal_name ? true : false
+              }
+              errorMessage={errors.informal_name}
             />
 
             <TextInputTag
               placeholder="Street Address"
-              onChangeText={handleChange('streetAddress')}
-              onBlur={handleBlur('streetAddress')}
-              value={values.streetAddress}
+              onChangeText={handleChange('address')}
+              onBlur={handleBlur('address')}
+              value={values.address}
               left={
                 <TextInput.Icon
                   color={colors.primaryText}
                   icon="home-outline"
                 />
               }
-              error={
-                errors.streetAddress && touched.streetAddress ? true : false
-              }
-              errorMessage={errors.streetAddress}
+              error={errors.address && touched.address ? true : false}
+              errorMessage={errors.address}
             />
             <TextInputTag
               placeholder="City"
@@ -114,10 +123,10 @@ export default function FarmInfo() {
 
               <TextInputTag
                 keyboardType="number-pad"
-                placeholder="Enter Zipcode"
-                onChangeText={handleChange('zipcode')}
-                onBlur={handleBlur('zipcode')}
-                value={values.zipcode}
+                placeholder="Enter zip_code"
+                onChangeText={handleChange('zip_code')}
+                onBlur={handleBlur('zip_code')}
+                value={values.zip_code}
               />
             </View>
           </View>

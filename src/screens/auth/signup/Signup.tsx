@@ -8,31 +8,38 @@ import ButtonTag from '../../../components/elements/ButtonTag';
 import SignupTemplate from './SignupTemplate';
 import VectorIcon from '../../../components/VectorIcon';
 import {Formik} from 'formik';
-import {object, string} from 'yup';
+import {object, ref, string} from 'yup';
 import {useNavigation} from '@react-navigation/native';
 
 let userSchema = object({
-  fullName: string().required().min(3, 'minimum length 4'),
-  //   email: string().email().required(),
+  full_name: string().required().min(3, 'minimum length 4'),
+  email: string().email().required('email required'),
+  phone: string().required('phone required'),
+  password: string().required('password required'),
+  confPassword: string()
+    .oneOf([ref('password'), null], 'Passwords must match')
+    .required('Confirm password is required'),
 });
 
 export default function Signup() {
   const navigation = useNavigation();
   function onSubmit(values) {
-    console.log(values);
-    navigation.navigate('FarmInfo');
+    delete values.confPassword;
+    // console.log(values);
+
+    navigation.navigate('FarmInfo', {data: values});
   }
 
   return (
     <Formik
       initialValues={{
-        fullName: '',
+        full_name: '',
         email: '',
         phone: '',
         password: '',
         confPassword: '',
       }}
-      //   validationSchema={userSchema}
+      validationSchema={userSchema}
       onSubmit={onSubmit}>
       {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
         <SignupTemplate
@@ -43,17 +50,17 @@ export default function Signup() {
           <View style={{rowGap: 15, marginTop: 20}}>
             <TextInputTag
               placeholder="Full Name"
-              onChangeText={handleChange('fullName')}
-              onBlur={handleBlur('fullName')}
-              value={values.fullName}
+              onChangeText={handleChange('full_name')}
+              onBlur={handleBlur('full_name')}
+              value={values.full_name}
               left={
                 <TextInput.Icon
                   color={colors.primaryText}
                   icon="account-outline"
                 />
               }
-              error={errors.fullName && touched.fullName ? true : false}
-              errorMessage={errors.fullName}
+              error={errors.full_name && touched.full_name ? true : false}
+              errorMessage={errors.full_name}
             />
             <TextInputTag
               placeholder="Email Address"
@@ -88,7 +95,9 @@ export default function Signup() {
               onChangeText={handleChange('confPassword')}
               onBlur={handleBlur('confPassword')}
               value={values.confPassword}
-              left={<TextInput.Icon color={colors.primaryText} icon="lock" />}
+              left={<TextInput.Icon color={colors.lightText} icon="lock" />}
+              error={errors.confPassword && touched.confPassword ? true : false}
+              errorMessage={errors.confPassword}
             />
           </View>
         </SignupTemplate>

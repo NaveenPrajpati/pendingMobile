@@ -10,33 +10,30 @@ import VectorIcon from '../../../components/VectorIcon';
 import {Formik} from 'formik';
 import {object, string} from 'yup';
 import {pick} from 'react-native-document-picker';
+import {useNavigation} from '@react-navigation/native';
 
 let userSchema = object({
-  fullName: string().required().min(3, 'minimum length 4'),
-  //   email: string().email().required(),
+  registration_proof: string().required('minimum length 4'),
 });
 
 export default function Verificaton() {
-  const [pickedFile, setPickedFile] = useState({name: 'safdsadfsda'});
+  const [pickedFile, setPickedFile] = useState({});
+  const navigation = useNavigation();
 
-  async function pickFile(params: type) {
+  async function pickFile() {
     const [file] = await pick({mode: 'open'});
-    console.log(file);
+    setPickedFile(file);
   }
 
   function onSubmit(values) {
     console.log(values);
+    navigation.navigate('BusinessHrs');
   }
 
   return (
     <Formik
       initialValues={{
-        businessName: '',
-        informalName: '',
-        streetAddress: '',
-        city: '',
-        state: '',
-        zipcode: '',
+        registration_proof: '',
       }}
       //   validationSchema={userSchema}
       onSubmit={onSubmit}>
@@ -66,22 +63,33 @@ export default function Verificaton() {
               </Pressable>
             </View>
 
-            <View
-              style={{
-                backgroundColor: colors.lightText,
-                flexDirection: 'row',
-                padding: 10,
-                borderRadius: 8,
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginTop: 20,
-              }}>
-              <Text
-                style={{color: colors.black, textDecorationLine: 'underline'}}>
-                {pickedFile.name}
-              </Text>
-              <VectorIcon iconName="close" color="black" />
-            </View>
+            {pickedFile?.name && (
+              <View
+                style={{
+                  backgroundColor: colors.lightText,
+                  flexDirection: 'row',
+                  padding: 10,
+                  borderRadius: 8,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginTop: 20,
+                }}>
+                <Text
+                  style={{
+                    color: colors.black,
+                    textDecorationLine: 'underline',
+                  }}>
+                  {pickedFile.name}
+                </Text>
+                <VectorIcon
+                  onPress={() => setPickedFile({})}
+                  iconPack="AntDesign"
+                  iconName="close"
+                  color="black"
+                  size={18}
+                />
+              </View>
+            )}
           </View>
         </SignupTemplate>
       )}

@@ -15,12 +15,13 @@ export default function TextInputTag(props: propType) {
     <View>
       <TextInput
         style={{
-          backgroundColor: colors.lightText,
+          backgroundColor: colors.lightBg,
           borderRadius: 8,
           borderTopEndRadius: 8,
           borderTopStartRadius: 8,
         }}
-        textColor={colors.black}
+        placeholderTextColor={colors.lightText}
+        textColor={colors.primaryText}
         mode={'flat'}
         underlineStyle={{width: 0}}
         {...props}
