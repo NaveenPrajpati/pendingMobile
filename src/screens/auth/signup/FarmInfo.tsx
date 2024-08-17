@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import TextInputTag from '../../../components/elements/TextInputTag';
 import {colors} from '../../../utils/styles';
 import {List, Text, TextInput} from 'react-native-paper';
@@ -22,13 +22,15 @@ let userSchema = object({
 
 export default function FarmInfo({route}) {
   const {data} = route.params;
-
+  // const [state, setState] = useState('');
+  console.log('prev-farminfo', data);
   const navigation = useNavigation();
   function onSubmit(values) {
-    console.log(values);
     const newData = {...data, ...values};
     navigation.navigate('Verificaton', {data: newData});
   }
+
+  const states = ['Delhi', 'Bihar', 'Gujrat'];
 
   return (
     <Formik
@@ -42,7 +44,15 @@ export default function FarmInfo({route}) {
       }}
       //   validationSchema={userSchema}
       onSubmit={onSubmit}>
-      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+        setFieldValue,
+      }) => (
         <SignupTemplate heading={'Farm Info'} stage={2} onPress={handleSubmit}>
           <View style={{rowGap: 15, marginTop: 40}}>
             <TextInputTag
@@ -99,31 +109,51 @@ export default function FarmInfo({route}) {
                 alignItems: 'flex-start',
                 justifyContent: 'space-between',
               }}>
-              <List.Section style={{borderRadius: 8}}>
+              <View
+                style={{
+                  borderRadius: 8,
+                  backgroundColor: colors.lightBg,
+                  padding: 2,
+                }}>
                 <List.Accordion
-                  title="State"
-                  titleStyle={{color: colors.gray}}
+                  title={values.state ? values.state : 'State'}
+                  titleStyle={{color: colors.lightText}}
+                  right={() => (
+                    <View
+                      style={{
+                        height: 20,
+                        width: 20,
+                      }}>
+                      <VectorIcon
+                        iconName="caretdown"
+                        iconPack="AntDesign"
+                        color="black"
+                        size={15}
+                      />
+                    </View>
+                  )}
                   style={{
-                    backgroundColor: colors.lightText,
-                    width: 150,
+                    backgroundColor: colors.lightBg,
+                    width: 140,
+                    height: 46,
                   }}>
-                  <List.Item
-                    style={{}}
-                    onPress={e => {}}
-                    titleStyle={{color: colors.black}}
-                    title="First item"
-                  />
-                  <List.Item
-                    style={{}}
-                    titleStyle={{color: colors.black}}
-                    title="Second item"
-                  />
+                  {states.map((item, index) => (
+                    <List.Item
+                      key={index}
+                      style={{}}
+                      onPress={e => {
+                        setFieldValue('state', item);
+                      }}
+                      titleStyle={{color: colors.black}}
+                      title={item}
+                    />
+                  ))}
                 </List.Accordion>
-              </List.Section>
+              </View>
 
               <TextInputTag
                 keyboardType="number-pad"
-                placeholder="Enter zip_code"
+                placeholder="Enter Zipcode"
                 onChangeText={handleChange('zip_code')}
                 onBlur={handleBlur('zip_code')}
                 value={values.zip_code}

@@ -62,7 +62,7 @@ export default function Login() {
             <TextInput
               placeholder="Email Address"
               style={{
-                backgroundColor: colors.lightText,
+                backgroundColor: colors.lightBg,
                 borderRadius: 8,
                 borderTopEndRadius: 8,
                 borderTopStartRadius: 8,
@@ -82,7 +82,7 @@ export default function Login() {
             <TextInput
               placeholder="Password"
               style={{
-                backgroundColor: colors.lightText,
+                backgroundColor: colors.lightBg,
                 borderRadius: 8,
                 borderTopEndRadius: 8,
                 borderTopStartRadius: 8,

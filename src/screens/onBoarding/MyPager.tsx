@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import PagerView from 'react-native-pager-view';
 
-import {Text} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 import ButtonTag from '../../components/elements/ButtonTag';
 import {colors, screenH, screenW} from '../../utils/styles';
 
@@ -45,8 +45,7 @@ const MyPager = ({navigation}) => {
             <Image
               source={item.image}
               width={screenW}
-              height={300}
-              style={{width: '100%'}}
+              style={{width: '100%', height: '100%'}}
               resizeMode="contain"
             />
           </View>
@@ -57,8 +56,10 @@ const MyPager = ({navigation}) => {
               borderTopRightRadius: 50,
               rowGap: 20,
               alignItems: 'center',
-              padding: 20,
-              height: screenH * 0.42,
+              justifyContent: 'space-between',
+              paddingVertical: 30,
+              paddingHorizontal: 40,
+              height: screenH * 0.5,
             }}>
             <Text
               variant="headlineSmall"
@@ -73,15 +74,45 @@ const MyPager = ({navigation}) => {
               style={{color: colors.primaryText, textAlign: 'center'}}>
               {item.text}
             </Text>
-            <ButtonTag buttonColor={item.bgColor}>Join the movement</ButtonTag>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 5,
+                marginVertical: 20,
+              }}>
+              {Array.from({length: 3}).map((_, index) => (
+                <View
+                  key={index}
+                  style={{
+                    height: 6,
+                    width: index + 1 == item.key ? 16 : 6,
+                    borderRadius: 3,
+                    backgroundColor: colors.primaryText,
+                  }}></View>
+              ))}
+            </View>
+
+            <Button
+              buttonColor={item.bgColor}
+              textColor="white"
+              style={{
+                padding: 6,
+              }}>
+              Join the movement
+            </Button>
 
             <Text
+              onPress={() => {
+                navigation.navigate('LoginNavigator');
+              }}
               variant="labelLarge"
               style={{
                 textDecorationLine: 'underline',
                 color: colors.primaryText,
               }}>
-              {item.text}
+              Login
             </Text>
           </View>
         </View>

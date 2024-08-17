@@ -1,4 +1,10 @@
-import {View, ViewProps} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  View,
+  ViewProps,
+} from 'react-native';
 import React, {Children, ReactNode} from 'react';
 import TextInputTag from '../../../components/elements/TextInputTag';
 import {colors} from '../../../utils/styles';
@@ -19,74 +25,97 @@ interface propType extends ViewProps {
 export default function SignupTemplate(props: propType) {
   const navigation = useNavigation();
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'space-between',
-        backgroundColor: colors.white,
-        padding: 20,
-      }}>
-      <View>
-        <Text variant="bodyLarge" style={{color: colors.primaryText}}>
-          FarmerEats
-        </Text>
-        <Text
-          variant="labelLarge"
-          style={{color: colors.lightText, marginTop: 20}}>
-          Signup {props.stage} of 4
-        </Text>
-        <Text
-          variant="headlineLarge"
-          style={{color: colors.primaryText, fontWeight: '700'}}>
-          {props.heading}
-        </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}
+      keyboardVerticalOffset={20}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'space-between',
+            backgroundColor: colors.white,
+            paddingHorizontal: 20,
+            paddingTop: 20,
+            paddingBottom: 40,
+          }}>
+          <View style={{flex: 1}}>
+            <Text variant="bodyLarge" style={{color: colors.primaryText}}>
+              FarmerEats
+            </Text>
+            <Text
+              variant="labelLarge"
+              style={{color: colors.lightText, marginTop: 20}}>
+              Signup {props.stage} of 4
+            </Text>
+            <Text
+              variant="headlineLarge"
+              style={{color: colors.primaryText, fontWeight: '700'}}>
+              {props.heading}
+            </Text>
 
-        {props.stage == 1 && (
-          <View style={{marginTop: 20}}>
-            <SocialButtons />
+            {props.stage == 1 && (
+              <View style={{marginTop: 20}}>
+                <SocialButtons />
+              </View>
+            )}
+
+            {props.info && (
+              <Text
+                variant="labelLarge"
+                style={{
+                  color: colors.lightText,
+                  marginTop: 20,
+                  textAlign: 'center',
+                }}>
+                {props.info}
+              </Text>
+            )}
+
+            {props.children}
           </View>
-        )}
-
-        {props.info && (
-          <Text
-            variant="labelLarge"
+          <View
             style={{
-              color: colors.lightText,
-              marginTop: 20,
-              textAlign: 'center',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}>
-            {props.info}
-          </Text>
-        )}
-
-        {props.children}
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        {props.stage == 1 ? (
-          <Text
-            variant="labelLarge"
-            style={{color: colors.black, textDecorationLine: 'underline'}}>
-            Login
-          </Text>
-        ) : (
-          <VectorIcon
-            onPress={() => {
-              navigation.goBack();
-            }}
-            iconName="arrowleft"
-            iconPack="AntDesign"
-            size={20}
-            style={{fontWeight: '700'}}
-            color="black"
-          />
-        )}
-        <ButtonTag onPress={props.onPress}>Continue</ButtonTag>
-      </View>
-    </View>
+            {props.stage == 1 ? (
+              <Text
+                onPress={() => navigation.navigate('LoginNavigator')}
+                style={{
+                  color: colors.black,
+                  textDecorationLine: 'underline',
+                  fontWeight: '300',
+                }}>
+                Login
+              </Text>
+            ) : (
+              <VectorIcon
+                onPress={() => {
+                  navigation.goBack();
+                }}
+                iconName="arrowleft"
+                iconPack="AntDesign"
+                size={20}
+                style={{fontWeight: '700'}}
+                color="black"
+              />
+            )}
+            <ButtonTag
+              onPress={props.onPress}
+              style={{
+                paddingHorizontal: '18%',
+                paddingVertical: 4,
+                borderRadius: 26,
+              }}>
+              Continue
+            </ButtonTag>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

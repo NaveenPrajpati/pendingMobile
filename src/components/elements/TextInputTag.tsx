@@ -19,6 +19,7 @@ export default function TextInputTag(props: propType) {
           borderRadius: 8,
           borderTopEndRadius: 8,
           borderTopStartRadius: 8,
+          height: 48,
         }}
         placeholderTextColor={colors.lightText}
         textColor={colors.primaryText}

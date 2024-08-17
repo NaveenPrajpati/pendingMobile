@@ -17,9 +17,11 @@ export default function ButtonTag({
   disabled,
   children,
   icon,
+  ...rest
 }: propType) {
   return (
     <Button
+      {...rest}
       loading={isLoading}
       icon={icon}
       mode="contained"

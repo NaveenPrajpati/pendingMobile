@@ -16,7 +16,8 @@ let userSchema = object({
   registration_proof: string().required('minimum length 4'),
 });
 
-export default function Verificaton() {
+export default function Verificaton({route}) {
+  const {data} = route.params;
   const [pickedFile, setPickedFile] = useState({});
   const navigation = useNavigation();
 
@@ -24,10 +25,12 @@ export default function Verificaton() {
     const [file] = await pick({mode: 'open'});
     setPickedFile(file);
   }
+  console.log('prev-verification', data);
 
   function onSubmit(values) {
     console.log(values);
-    navigation.navigate('BusinessHrs');
+    data.registration_proof = pickedFile.uri;
+    navigation.navigate('BusinessHrs', {data});
   }
 
   return (

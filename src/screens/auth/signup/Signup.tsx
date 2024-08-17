@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView, View} from 'react-native';
 import React from 'react';
 import TextInputTag from '../../../components/elements/TextInputTag';
 import {colors} from '../../../utils/styles';
@@ -47,59 +47,82 @@ export default function Signup() {
           stage={1}
           info="or signup with"
           onPress={handleSubmit}>
-          <View style={{rowGap: 15, marginTop: 20}}>
-            <TextInputTag
-              placeholder="Full Name"
-              onChangeText={handleChange('full_name')}
-              onBlur={handleBlur('full_name')}
-              value={values.full_name}
-              left={
-                <TextInput.Icon
-                  color={colors.primaryText}
-                  icon="account-outline"
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flex: 1}}>
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <View style={{rowGap: 15, marginTop: 20, flex: 1}}>
+                <TextInputTag
+                  placeholder="Full Name"
+                  onChangeText={handleChange('full_name')}
+                  onBlur={handleBlur('full_name')}
+                  value={values.full_name}
+                  left={
+                    <TextInput.Icon
+                      color={colors.black}
+                      icon="account-outline"
+                    />
+                  }
+                  error={errors.full_name && touched.full_name ? true : false}
+                  errorMessage={errors.full_name}
                 />
-              }
-              error={errors.full_name && touched.full_name ? true : false}
-              errorMessage={errors.full_name}
-            />
-            <TextInputTag
-              placeholder="Email Address"
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              left={<TextInput.Icon color={colors.primaryText} icon="mail" />}
-              error={errors.email && touched.email ? true : false}
-              errorMessage={errors.email}
-            />
+                <TextInputTag
+                  placeholder="Email Address"
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  value={values.email}
+                  left={
+                    <TextInput.Icon color={colors.primaryText} icon="mail" />
+                  }
+                  error={errors.email && touched.email ? true : false}
+                  errorMessage={errors.email}
+                />
 
-            <TextInputTag
-              placeholder="Phone Number"
-              onChangeText={handleChange('phone')}
-              onBlur={handleBlur('phone')}
-              value={values.phone}
-              left={<TextInput.Icon color={colors.primaryText} icon="phone" />}
-              error={errors.phone && touched.phone ? true : false}
-              errorMessage={errors.phone}
-            />
-            <TextInputTag
-              placeholder="Password"
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
-              left={<TextInput.Icon color={colors.primaryText} icon="lock" />}
-              error={errors.password && touched.password ? true : false}
-              errorMessage={errors.password}
-            />
-            <TextInputTag
-              placeholder="Re-enter Password"
-              onChangeText={handleChange('confPassword')}
-              onBlur={handleBlur('confPassword')}
-              value={values.confPassword}
-              left={<TextInput.Icon color={colors.lightText} icon="lock" />}
-              error={errors.confPassword && touched.confPassword ? true : false}
-              errorMessage={errors.confPassword}
-            />
-          </View>
+                <TextInputTag
+                  placeholder="Phone Number"
+                  onChangeText={handleChange('phone')}
+                  onBlur={handleBlur('phone')}
+                  value={values.phone}
+                  left={
+                    <TextInput.Icon
+                      color={colors.primaryText}
+                      icon="phone-outline"
+                    />
+                  }
+                  error={errors.phone && touched.phone ? true : false}
+                  errorMessage={errors.phone}
+                />
+                <TextInputTag
+                  placeholder="Password"
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  value={values.password}
+                  secureTextEntry
+                  left={
+                    <TextInput.Icon
+                      color={colors.primaryText}
+                      icon="lock-outline"
+                    />
+                  }
+                  error={errors.password && touched.password ? true : false}
+                  errorMessage={errors.password}
+                />
+                <TextInputTag
+                  placeholder="Re-enter Password"
+                  onChangeText={handleChange('confPassword')}
+                  onBlur={handleBlur('confPassword')}
+                  value={values.confPassword}
+                  left={
+                    <TextInput.Icon color={colors.black} icon="lock-outline" />
+                  }
+                  error={
+                    errors.confPassword && touched.confPassword ? true : false
+                  }
+                  errorMessage={errors.confPassword}
+                />
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </SignupTemplate>
       )}
     </Formik>

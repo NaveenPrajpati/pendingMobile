@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, ReactNode} from 'react';
-import {View} from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {colors} from '../../../utils/styles';
 
@@ -19,26 +19,39 @@ export default function Template({
   children,
 }: propType) {
   return (
-    <View style={{flex: 1, backgroundColor: colors.white, padding: 20}}>
-      <Text variant="bodyLarge" style={{color: colors.primaryText}}>
-        FarmerEats
-      </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}
+      keyboardVerticalOffset={20}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={{flex: 1, backgroundColor: colors.white, padding: 20}}>
+          <Text variant="bodyLarge" style={{color: colors.primaryText}}>
+            FarmerEats
+          </Text>
 
-      <Text
-        variant="headlineLarge"
-        style={{color: colors.primaryText, fontWeight: '700', marginTop: 70}}>
-        {heading}
-      </Text>
-      <Text
-        variant="labelLarge"
-        style={{color: colors.lightText, fontWeight: '700', marginTop: 20}}>
-        {subHeading}{' '}
-        <Text style={{color: colors.primary}} onPress={onPressHead}>
-          {subHeadText}
-        </Text>
-      </Text>
+          <Text
+            variant="headlineLarge"
+            style={{
+              color: colors.primaryText,
+              fontWeight: '700',
+              marginTop: 70,
+            }}>
+            {heading}
+          </Text>
+          <Text
+            variant="labelLarge"
+            style={{color: colors.lightText, fontWeight: '700', marginTop: 20}}>
+            {subHeading}{' '}
+            <Text style={{color: colors.primary}} onPress={onPressHead}>
+              {subHeadText}
+            </Text>
+          </Text>
 
-      {children}
-    </View>
+          {children}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

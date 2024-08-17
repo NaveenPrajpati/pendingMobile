@@ -1,22 +1,21 @@
+import {useNavigation} from '@react-navigation/native';
+import {Formik} from 'formik';
+import React, {useEffect, useState} from 'react';
 import {
-  Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import TextInputTag from '../../../components/elements/TextInputTag';
-import {colors} from '../../../utils/styles';
-import {Avatar, List, Text, TextInput} from 'react-native-paper';
-import SocialButtons from '../../../components/SocialButtons';
-import ButtonTag from '../../../components/elements/ButtonTag';
-import SignupTemplate from './SignupTemplate';
-import VectorIcon from '../../../components/VectorIcon';
-import {Formik} from 'formik';
+import {Text} from 'react-native-paper';
 import {object, string} from 'yup';
-import {pick} from 'react-native-document-picker';
-import {useNavigation} from '@react-navigation/native';
+import {colors} from '../../../utils/styles';
+import SignupTemplate from './SignupTemplate';
+import {getDeviceId, getDeviceToken} from 'react-native-device-info';
+import axios from 'axios';
+import {SignupApi} from '../../../services/endPoints';
+import Toast from 'react-native-toast-message';
 
 let userSchema = object({
   business_hours: string().required(),
@@ -25,7 +24,8 @@ let userSchema = object({
 export default function BusinessHrs({route}) {
   const {data} = route.params;
   const navigation = useNavigation();
-  const [selectedDay, setSelectedDay] = useState('wed'); // Default selected day
+  const [selectedDay, setSelectedDay] = useState('wed');
+  const [deviceId, setDeviceId] = useState('');
   const [businessHours, setBusinessHours] = useState({
     mon: [],
     tue: [],
@@ -35,6 +35,8 @@ export default function BusinessHrs({route}) {
     sat: [],
     sun: [],
   });
+
+  console.log('prev-businees', data);
 
   const days = [
     {label: 'M', value: 'mon'},
@@ -66,15 +68,51 @@ export default function BusinessHrs({route}) {
     });
   };
 
+  useEffect(() => {
+    if (Platform.OS == 'ios') {
+      getDeviceToken()
+        .then(res => {
+          setDeviceId(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      setDeviceId(getDeviceId());
+    }
+  }, []);
+
   function onSubmit(values) {
-    const nd = {...data, ...values};
+    data.business_hours = businessHours;
 
-    nd.device_token = '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx';
-    nd.type = 'email/facebook/google/apple';
-    nd.social_id = '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx';
+    data.device_token = deviceId;
+    data.type = 'email/facebook/google/apple';
+    data.social_id = '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx';
+    data.role = 'farmer';
 
-    console.log(nd);
-    navigation.navigate('Done');
+    console.log(data);
+
+    axios
+      .post(SignupApi, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.success == 'true') {
+          Toast.show({type: 'success', text1: res.data.message});
+          navigation.navigate('Done', {data});
+        } else {
+          Toast.show({type: 'error', text1: res.data.message});
+          // navigation.navigate('Done', {data});
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        Toast.show({type: 'error', text1: err});
+      });
   }
 
   return (
