@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 
 let userSchema = object({
   business_name: string().required().min(3, 'minimum length 4'),
-  informal_name: string().email().required('email required'),
+  informal_name: string().required('email required'),
   address: string().required('phone required'),
   city: string().required('password required'),
   state: string().required('password required'),
@@ -23,7 +23,6 @@ let userSchema = object({
 export default function FarmInfo({route}) {
   const {data} = route.params;
   // const [state, setState] = useState('');
-  console.log('prev-farminfo', data);
   const navigation = useNavigation();
   function onSubmit(values) {
     const newData = {...data, ...values};
@@ -42,7 +41,7 @@ export default function FarmInfo({route}) {
         state: '',
         zip_code: '',
       }}
-      //   validationSchema={userSchema}
+      validationSchema={userSchema}
       onSubmit={onSubmit}>
       {({
         handleChange,
@@ -73,7 +72,14 @@ export default function FarmInfo({route}) {
               onChangeText={handleChange('informal_name')}
               onBlur={handleBlur('informal_name')}
               value={values.informal_name}
-              left={<TextInput.Icon color={colors.primaryText} icon="mail" />}
+              left={
+                <TextInput.Icon
+                  color={'black'}
+                  icon={() => (
+                    <VectorIcon iconName="smile-o" size={20} color="black" />
+                  )}
+                />
+              }
               error={
                 errors.informal_name && touched.informal_name ? true : false
               }

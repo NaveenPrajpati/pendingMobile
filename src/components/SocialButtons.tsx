@@ -4,6 +4,11 @@ import {Avatar, Button} from 'react-native-paper';
 import {colors} from '../utils/styles';
 
 export default function SocialButtons() {
+  const data = [
+    require('../assets/images/google.png'),
+    require('../assets/images/apple.png'),
+    require('../assets/images/facebook.png'),
+  ];
   return (
     <View
       style={{
@@ -11,49 +16,24 @@ export default function SocialButtons() {
         justifyContent: 'space-around',
         alignItems: 'center',
       }}>
-      <Button
-        mode="outlined"
-        style={{
-          borderColor: colors.lightText,
-          paddingHorizontal: 8,
-          paddingVertical: 2,
-        }}
-        onPress={() => console.log('Pressed')}>
-        <Avatar.Image
-          size={24}
-          style={{backgroundColor: 'white'}}
-          source={require('../assets/images/google.png')}
-        />
-      </Button>
-      <Button
-        mode="outlined"
-        style={{
-          borderColor: colors.lightText,
-          paddingHorizontal: 8,
-          paddingVertical: 2,
-        }}
-        onPress={() => console.log('Pressed')}>
-        <Avatar.Image
-          size={24}
-          style={{backgroundColor: 'white'}}
-          source={require('../assets/images/apple.png')}
-        />
-      </Button>
-
-      <Button
-        mode="outlined"
-        style={{
-          borderColor: colors.lightText,
-          paddingHorizontal: 8,
-          paddingVertical: 2,
-        }}
-        onPress={() => console.log('Pressed')}>
-        <Avatar.Image
-          size={24}
-          style={{backgroundColor: 'white'}}
-          source={require('../assets/images/facebook.png')}
-        />
-      </Button>
+      {data.map((item, index) => (
+        <Button
+          key={index}
+          mode="outlined"
+          style={{
+            borderColor: colors.lightBg,
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+            borderRadius: 25,
+          }}
+          onPress={() => console.log('Pressed')}>
+          <Avatar.Image
+            size={24}
+            style={{backgroundColor: 'white'}}
+            source={item}
+          />
+        </Button>
+      ))}
     </View>
   );
 }

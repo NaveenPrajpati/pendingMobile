@@ -24,6 +24,7 @@ let userSchema = object({
 export default function BusinessHrs({route}) {
   const {data} = route.params;
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const [selectedDay, setSelectedDay] = useState('wed');
   const [deviceId, setDeviceId] = useState('');
   const [businessHours, setBusinessHours] = useState({
@@ -35,8 +36,6 @@ export default function BusinessHrs({route}) {
     sat: [],
     sun: [],
   });
-
-  console.log('prev-businees', data);
 
   const days = [
     {label: 'M', value: 'mon'},
@@ -83,6 +82,7 @@ export default function BusinessHrs({route}) {
   }, []);
 
   function onSubmit(values) {
+    setLoading(true);
     data.business_hours = businessHours;
 
     data.device_token = deviceId;
@@ -101,16 +101,21 @@ export default function BusinessHrs({route}) {
       })
       .then(res => {
         console.log(res.data);
-        if (res.data.success == 'true') {
+        if (res.data.success) {
           Toast.show({type: 'success', text1: res.data.message});
+          setLoading(false);
           navigation.navigate('Done', {data});
         } else {
           Toast.show({type: 'error', text1: res.data.message});
+          setLoading(false);
+
           // navigation.navigate('Done', {data});
         }
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
+
         Toast.show({type: 'error', text1: err});
       });
   }
@@ -124,6 +129,7 @@ export default function BusinessHrs({route}) {
         <SignupTemplate
           heading={'Business Hours'}
           stage={4}
+          loading={loading}
           onPress={handleSubmit}
           info="Choose the hours your farm is open for pickups. This will allow customers to order deliveries.">
           <View style={{rowGap: 15, marginTop: 40}}>

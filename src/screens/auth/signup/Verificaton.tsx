@@ -25,7 +25,6 @@ export default function Verificaton({route}) {
     const [file] = await pick({mode: 'open'});
     setPickedFile(file);
   }
-  console.log('prev-verification', data);
 
   function onSubmit(values) {
     console.log(values);
@@ -40,7 +39,15 @@ export default function Verificaton({route}) {
       }}
       //   validationSchema={userSchema}
       onSubmit={onSubmit}>
-      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+        setFieldValue,
+      }) => (
         <SignupTemplate
           heading={'Verification'}
           stage={3}

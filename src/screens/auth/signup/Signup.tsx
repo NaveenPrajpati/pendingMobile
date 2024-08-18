@@ -72,7 +72,17 @@ export default function Signup() {
                   onBlur={handleBlur('email')}
                   value={values.email}
                   left={
-                    <TextInput.Icon color={colors.primaryText} icon="mail" />
+                    <TextInput.Icon
+                      color={'black'}
+                      icon={() => (
+                        <VectorIcon
+                          iconName="email"
+                          iconPack="Entypo"
+                          size={20}
+                          color="black"
+                        />
+                      )}
+                    />
                   }
                   error={errors.email && touched.email ? true : false}
                   errorMessage={errors.email}

@@ -19,39 +19,30 @@ export default function Template({
   children,
 }: propType) {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}
-      keyboardVerticalOffset={20}>
-      <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled">
-        <View style={{flex: 1, backgroundColor: colors.white, padding: 20}}>
-          <Text variant="bodyLarge" style={{color: colors.primaryText}}>
-            FarmerEats
-          </Text>
+    <View style={{flex: 1, backgroundColor: colors.white, padding: 20}}>
+      <Text variant="bodyLarge" style={{color: colors.primaryText}}>
+        FarmerEats
+      </Text>
 
-          <Text
-            variant="headlineLarge"
-            style={{
-              color: colors.primaryText,
-              fontWeight: '700',
-              marginTop: 70,
-            }}>
-            {heading}
-          </Text>
-          <Text
-            variant="labelLarge"
-            style={{color: colors.lightText, fontWeight: '700', marginTop: 20}}>
-            {subHeading}{' '}
-            <Text style={{color: colors.primary}} onPress={onPressHead}>
-              {subHeadText}
-            </Text>
-          </Text>
+      <Text
+        variant="headlineLarge"
+        style={{
+          color: colors.primaryText,
+          fontWeight: '700',
+          marginTop: 70,
+        }}>
+        {heading}
+      </Text>
+      <Text
+        variant="labelLarge"
+        style={{color: colors.lightText, fontWeight: '700', marginTop: 20}}>
+        {subHeading}{' '}
+        <Text style={{color: colors.primary}} onPress={onPressHead}>
+          {subHeadText}
+        </Text>
+      </Text>
 
-          {children}
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      {children}
+    </View>
   );
 }

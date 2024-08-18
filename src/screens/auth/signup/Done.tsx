@@ -3,10 +3,10 @@ import React from 'react';
 import {Text} from 'react-native-paper';
 import {colors} from '../../../utils/styles';
 import ButtonTag from '../../../components/elements/ButtonTag';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Done({route}) {
-  const {data} = route.params;
-  console.log('prev-done', data);
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -14,11 +14,11 @@ export default function Done({route}) {
         paddingTop: 20,
         padding: 20,
         paddingBottom: 40,
+        backgroundColor: 'white',
       }}>
       <View
         style={{
           flex: 1,
-          backgroundColor: 'white',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -49,7 +49,13 @@ export default function Done({route}) {
           inventory.
         </Text>
       </View>
-      <ButtonTag style={{padding: 5, borderRadius: 25}}>Got it!</ButtonTag>
+      <ButtonTag
+        onPress={() => {
+          navigation.navigate('Login');
+        }}
+        style={{padding: 5, borderRadius: 25}}>
+        Got it!
+      </ButtonTag>
     </View>
   );
 }

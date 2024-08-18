@@ -95,10 +95,14 @@ const MyPager = ({navigation}) => {
             </View>
 
             <Button
+              onPress={() => {
+                navigation.navigate('LoginNavigator');
+              }}
               buttonColor={item.bgColor}
               textColor="white"
               style={{
                 padding: 6,
+                borderRadius: 25,
               }}>
               Join the movement
             </Button>

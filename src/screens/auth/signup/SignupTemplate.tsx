@@ -20,6 +20,7 @@ interface propType extends ViewProps {
   stage: Number;
   onPress: () => void;
   children: ReactNode;
+  loading?: boolean;
 }
 
 export default function SignupTemplate(props: propType) {
@@ -106,6 +107,7 @@ export default function SignupTemplate(props: propType) {
             )}
             <ButtonTag
               onPress={props.onPress}
+              loading={props.loading}
               style={{
                 paddingHorizontal: '18%',
                 paddingVertical: 4,
