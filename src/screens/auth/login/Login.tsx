@@ -20,6 +20,12 @@ import Toast from 'react-native-toast-message';
 import {getDeviceId, getDeviceToken} from 'react-native-device-info';
 import TextInputTag from '../../../components/elements/TextInputTag';
 import VectorIcon from '../../../components/VectorIcon';
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import {AccessToken, LoginManager, Profile} from 'react-native-fbsdk-next';
 
 let userSchema = object({
   password: string().required().min(3, 'minimum length 4'),
@@ -45,12 +51,8 @@ export default function Login() {
     }
   }, []);
 
-  function onSubmit(values) {
-    setLoading(true);
-    values.role = 'farmer';
-    values.device_token = deviceId;
-    values.type = 'email/facebook/google/apple';
-    values.social_id = '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx';
+  function loginOperation(values) {
+    console.log('payload-', values);
     axios
       .post(LoginApi, values, {
         headers: {
@@ -75,6 +77,99 @@ export default function Login() {
         Toast.show({type: 'error', text1: err});
         setLoading(false);
       });
+  }
+
+  function onSubmit(values) {
+    setLoading(true);
+    values.role = 'farmer';
+    values.device_token = deviceId;
+    values.type = 'email';
+    values.social_id = '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx';
+    loginOperation(values);
+  }
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+      const {idToken, user} = userInfo;
+
+      const data = {
+        full_name: user.name,
+        email: user.email,
+        type: 'google',
+        social_id: user.id,
+        role: 'farmer',
+        device_token: deviceId,
+      };
+
+      if (idToken) {
+        loginOperation(data);
+      }
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.NO_SAVED_CREDENTIAL_FOUND:
+            // Android and Apple only. No saved credential found, try calling `createAccount`
+            break;
+          case statusCodes.SIGN_IN_CANCELLED:
+            // sign in was cancelled
+            break;
+          case statusCodes.ONE_TAP_START_FAILED:
+            // Android-only, you probably have hit rate limiting.
+            // On Android, you can still call `presentExplicitSignIn` in this case.
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android-only: play services not available or outdated
+            // Web: when calling an unimplemented api (requestAuthorization)
+            break;
+          default:
+          // something else happened
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+      }
+    }
+  };
+
+  const handleCustomLogin = () => {
+    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+      result => {
+        if (result.isCancelled) {
+          console.log('Login cancelled Conclusion');
+          Toast.show({type: 'error', text1: 'Login cancelled'});
+        } else {
+          AccessToken.getCurrentAccessToken().then(data => {
+            Profile.getCurrentProfile().then(user => {
+              console.log(user);
+              const data = {
+                full_name: user?.name,
+                email: user?.email,
+                type: 'facebook',
+                social_id: user?.userID,
+                role: 'farmer',
+                device_token: deviceId,
+              };
+
+              loginOperation(data);
+            });
+            // getUserInfo(data.accessToken.toString());
+          });
+        }
+      },
+      error => {
+        console.error(error);
+      },
+    );
+  };
+
+  function handleSocialPress(e: string): void {
+    if (e == 'google') {
+      signIn();
+    } else if (e == 'facebook') {
+      handleCustomLogin();
+    }
   }
 
   return (
@@ -159,7 +254,7 @@ export default function Login() {
           style={{color: colors.lightText, textAlign: 'center'}}>
           or login with
         </Text>
-        <SocialButtons />
+        <SocialButtons onPress={handleSocialPress} />
       </View>
     </Template>
   );

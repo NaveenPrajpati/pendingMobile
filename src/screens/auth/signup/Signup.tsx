@@ -1,16 +1,19 @@
-import {KeyboardAvoidingView, Platform, ScrollView, View} from 'react-native';
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import {AccessToken, LoginManager, Profile} from 'react-native-fbsdk-next';
+import {useNavigation} from '@react-navigation/native';
+import {Formik} from 'formik';
 import React from 'react';
+import {KeyboardAvoidingView, Platform, ScrollView, View} from 'react-native';
+import {TextInput} from 'react-native-paper';
+import {object, ref, string} from 'yup';
+import VectorIcon from '../../../components/VectorIcon';
 import TextInputTag from '../../../components/elements/TextInputTag';
 import {colors} from '../../../utils/styles';
-import {Text, TextInput} from 'react-native-paper';
-import SocialButtons from '../../../components/SocialButtons';
-import ButtonTag from '../../../components/elements/ButtonTag';
 import SignupTemplate from './SignupTemplate';
-import VectorIcon from '../../../components/VectorIcon';
-import {Formik} from 'formik';
-import {object, ref, string} from 'yup';
-import {useNavigation} from '@react-navigation/native';
-
 let userSchema = object({
   full_name: string().required().min(3, 'minimum length 4'),
   email: string().email().required('email required'),
@@ -30,6 +33,94 @@ export default function Signup() {
     navigation.navigate('FarmInfo', {data: values});
   }
 
+  GoogleSignin.configure({
+    webClientId: `381680410065-v2jmvm7u7vc6tj0151lcnt6kumdcb6cm.apps.googleusercontent.com`,
+    // androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+    // iosClientId: GOOGLE_IOS_CLIENT_ID,
+    offlineAccess: true,
+    scopes: ['profile', 'email'],
+  });
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      // console.log(userInfo);
+      const {idToken, user} = userInfo;
+
+      const data = {
+        full_name: user.name,
+        email: user.email,
+        type: 'google',
+        social_id: user.id,
+      };
+
+      if (idToken) {
+        navigation.navigate('FarmInfo', {data});
+      }
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.NO_SAVED_CREDENTIAL_FOUND:
+            // Android and Apple only. No saved credential found, try calling `createAccount`
+            break;
+          case statusCodes.SIGN_IN_CANCELLED:
+            // sign in was cancelled
+            break;
+          case statusCodes.ONE_TAP_START_FAILED:
+            // Android-only, you probably have hit rate limiting.
+            // On Android, you can still call `presentExplicitSignIn` in this case.
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android-only: play services not available or outdated
+            // Web: when calling an unimplemented api (requestAuthorization)
+            break;
+          default:
+          // something else happened
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+      }
+    }
+  };
+
+  const handleCustomLogin = () => {
+    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+      result => {
+        if (result.isCancelled) {
+          console.log('Login cancelled Conclusion');
+        } else {
+          AccessToken.getCurrentAccessToken().then(data => {
+            console.log(data);
+
+            Profile.getCurrentProfile().then(user => {
+              const data = {
+                full_name: user?.name,
+                email: user?.email,
+                type: 'facebook',
+                social_id: user?.userID,
+              };
+
+              navigation.navigate('FarmInfo', {data});
+            });
+            // getUserInfo(data.accessToken.toString());
+          });
+        }
+      },
+      error => {
+        console.error(error);
+      },
+    );
+  };
+
+  function handleSocialPress(e: string): void {
+    if (e == 'google') {
+      signIn();
+    } else if (e == 'facebook') {
+      handleCustomLogin();
+    }
+  }
+
   return (
     <Formik
       initialValues={{
@@ -46,7 +137,8 @@ export default function Signup() {
           heading={'Welcome!'}
           stage={1}
           info="or signup with"
-          onPress={handleSubmit}>
+          onPress={handleSubmit}
+          onSocialPress={handleSocialPress}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{flex: 1}}>

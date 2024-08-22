@@ -86,8 +86,7 @@ export default function BusinessHrs({route}) {
     data.business_hours = businessHours;
 
     data.device_token = deviceId;
-    data.type = 'email/facebook/google/apple';
-    data.social_id = '0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx';
+
     data.role = 'farmer';
 
     console.log(data);

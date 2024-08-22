@@ -1,14 +1,33 @@
-import {View, Text} from 'react-native';
-import React from 'react';
+import {View, Text, GestureResponderEvent} from 'react-native';
+import React, {useState} from 'react';
 import {Avatar, Button} from 'react-native-paper';
 import {colors} from '../utils/styles';
 
-export default function SocialButtons() {
+import axios from 'axios';
+import {LoginApi} from '../services/endPoints';
+import Toast from 'react-native-toast-message';
+import {useNavigation} from '@react-navigation/native';
+
+export default function SocialButtons({
+  onPress,
+}: {
+  onPress: (e: string) => void;
+}) {
   const data = [
-    require('../assets/images/google.png'),
-    require('../assets/images/apple.png'),
-    require('../assets/images/facebook.png'),
+    {
+      name: 'google',
+      image: require('../assets/images/google.png'),
+    },
+    {
+      name: 'apple',
+      image: require('../assets/images/apple.png'),
+    },
+    {
+      name: 'facebook',
+      image: require('../assets/images/facebook.png'),
+    },
   ];
+
   return (
     <View
       style={{
@@ -26,11 +45,11 @@ export default function SocialButtons() {
             paddingVertical: 2,
             borderRadius: 25,
           }}
-          onPress={() => console.log('Pressed')}>
+          onPress={() => onPress(item.name)}>
           <Avatar.Image
             size={24}
             style={{backgroundColor: 'white'}}
-            source={item}
+            source={item.image}
           />
         </Button>
       ))}

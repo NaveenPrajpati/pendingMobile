@@ -19,12 +19,14 @@ interface propType extends ViewProps {
   info?: string;
   stage: Number;
   onPress: () => void;
+  onSocialPress?: (e: string) => void;
   children: ReactNode;
   loading?: boolean;
 }
 
 export default function SignupTemplate(props: propType) {
   const navigation = useNavigation();
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -59,7 +61,7 @@ export default function SignupTemplate(props: propType) {
 
             {props.stage == 1 && (
               <View style={{marginTop: 20}}>
-                <SocialButtons />
+                <SocialButtons onPress={props.onSocialPress} />
               </View>
             )}
 
