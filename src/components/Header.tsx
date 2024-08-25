@@ -2,8 +2,10 @@ import {View, Text} from 'react-native';
 import React from 'react';
 import {Appbar, Avatar, Switch, useTheme} from 'react-native-paper';
 import {PreferencesContext} from '../contexts/PreferenceContext';
+import {getHeaderTitle} from '@react-navigation/elements';
 
-export default function Header() {
+export default function Header({navigation, route, options, back}) {
+  const title = getHeaderTitle(options, route.name);
   const theme = useTheme();
   const {toggleTheme, isThemeDark} = React.useContext(PreferencesContext);
   return (

@@ -32,7 +32,7 @@ function AuthNavigator() {
 function Routes() {
   return (
     <Tab.Navigator
-      screenOptions={{header: () => <Header />}}
+      screenOptions={{header: props => <Header {...props} />}}
       tabBar={({navigation, state, descriptors, insets}) => (
         <BottomNavigation.Bar
           style={{backgroundColor: 'white'}}
